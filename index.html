@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header">
+            <img src="./img/images-removebg-preview.png" alt="Logo">
+        </div>
+    </header>
+
+    <h1 class="titulo">Sorteador de Nomes</h1>
+
+    <div class="container">
+        <p>Insira os nomes separados por vírgula:</p>
+        <!-- Usando um textarea agora -->
+        <textarea id="nomesInput" placeholder="Exemplo: João, Maria, Pedro, Ana"></textarea>
+        <button id="sortearBtn">Sortear</button>
+    </div>
+
+    <script>
+        document.getElementById('sortearBtn').addEventListener('click', function() {
+            const nomes = document.getElementById('nomesInput').value.trim();
+            if (nomes === "") {
+                alert("Por favor, insira nomes.");
+                return;
+            }
+            const nomesArray = nomes.split(',').map(nome => nome.trim()).filter(nome => nome !== "");
+            if (nomesArray.length === 0) {
+                alert("Por favor, insira nomes válidos.");
+                return;
+            }
+            localStorage.setItem('nomes', JSON.stringify(nomesArray));
+            window.location.href = 'sortear.html'; // Redireciona para sortear.html
+        });
+    </script>
+</body>
+</html>

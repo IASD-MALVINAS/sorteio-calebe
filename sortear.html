@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado do Sorteio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header">
+            <img src="./img/images-removebg-preview.png">
+        </div>
+    </header>
+
+    <h1 class="titulo">Nome Sorteado</h1>
+
+    <div class="container">
+        <p id="nomeSorteado">Clique no botão abaixo para sortear um nome.</p>
+        <button id="sortearNovamente">Sortear Novamente</button>
+    </div>
+    <script>
+        // Recupera os nomes do localStorage
+let nomes = JSON.parse(localStorage.getItem('nomes'));
+
+// Função para sortear o nome
+function sortearNome() {
+    if (nomes && nomes.length > 0) {
+        const indiceSorteado = Math.floor(Math.random() * nomes.length);
+        const nomeSorteado = nomes.splice(indiceSorteado, 1)[0];  // Remove o nome sorteado da lista
+        
+        // Inicia com o contador 3
+        let contador = 3;
+        const nomeSorteadoElement = document.getElementById('nomeSorteado');
+        nomeSorteadoElement.textContent = contador; // Inicia com o número 3
+        
+        // Desativa o botão de sortear enquanto a contagem está em andamento
+        document.getElementById('sortearNovamente').disabled = true;
+        
+        // Função para realizar a contagem regressiva
+        const intervalo = setInterval(() => {
+            contador--;
+            if (contador > 0) {
+                nomeSorteadoElement.textContent = contador; // Atualiza o número
+                // Muda a cor conforme o número
+                nomeSorteadoElement.style.color = getColorForNumber(contador);
+            } else {
+                clearInterval(intervalo);
+                nomeSorteadoElement.textContent = nomeSorteado; // Exibe o nome sorteado
+                localStorage.setItem('nomes', JSON.stringify(nomes)); // Atualiza o localStorage com os nomes restantes
+                document.getElementById('sortearNovamente').disabled = false; // Reativa o botão
+            }
+        }, 1000); // Atualiza a cada 1 segundo
+    } else {
+        document.getElementById('nomeSorteado').textContent = "Todos os nomes foram sorteados!";
+        document.getElementById('sortearNovamente').textContent = "Voltar para a tela inicial"; // Muda o texto do botão
+        document.getElementById('sortearNovamente').disabled = false;  // Reativa o botão para permitir o retorno à tela inicial
+    }
+}
+
+// Função para determinar a cor para cada número
+function getColorForNumber(numero) {
+    switch (numero) {
+        case 3:
+            return 'red'; // Cor para 3
+        case 2:
+            return 'orange'; // Cor para 2
+        case 1:
+            return 'green'; // Cor para 1
+        default:
+            return 'black'; // Cor padrão
+    }
+}
+
+// Sortear um nome ao carregar a página
+sortearNome();
+
+// Sortear novamente ao clicar no botão
+document.getElementById('sortearNovamente').addEventListener('click', function() {
+    if (nomes && nomes.length === 0) {
+        // Exibe um alerta antes de redirecionar
+        alert("Todos os nomes já foram sorteados!");
+        
+        // Se todos os nomes foram sorteados, remove do localStorage e redireciona para a página inicial
+        localStorage.removeItem('nomes'); // Remove os nomes do localStorage
+        window.location.href = 'index.html'; // Redireciona para a página inicial
+    } else {
+        // Caso contrário, faz um novo sorteio
+        sortearNome();
+    }
+});
+    </script>
+</body>
+</html>
